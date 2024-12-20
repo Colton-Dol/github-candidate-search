@@ -6,15 +6,23 @@ const CandidateSearch = () => {
   const [candidates, setCandidates] = useState<any>([]);
 
   const candidatesArray: any = [];
-  useEffect(() => {
-    setCandidates([{id: 1, name: 'oliver', email: 'olimax@gmail.com'}]);
-  }, [])
+  let i = 0;
 
   useEffect(() => {
     searchGithub().then(data => {
-     searchGithubUser(data[0].login)
+     searchGithubUser(data[i].login)
      .then(user => {
-      candidatesArray.push(user);
+      console.log(user);
+      const profile = {
+        avatar: user.avatar_url,
+        name: `${user.name || ''}(${user.login || ''})`,
+        location: user.location,
+        email: user.email,
+        company: user.company,
+        bio: user.bio
+      }
+      candidatesArray.push(profile);
+      setCandidates(candidatesArray)
      })
     })
   }, [])
@@ -24,13 +32,19 @@ const CandidateSearch = () => {
       <h1>Candidate Search</h1>
       {candidates.map((candidate: any) => {
         return (
-          <>
-           <p>{candidate.name}</p>
-           <p>{candidate.email}</p>
-          </>
+          <div style={{backgroundColor: 'black', borderRadius: 1}}>
+           <img src={candidate.avatar}/>
+           <div style={{marginLeft: 15}}>
+              <h4>{candidate.name}</h4>
+              <p>Location: {candidate.location || 'Not Found'}</p>
+              <p>Email: {candidate.email || 'Not Found'}</p>
+              <p>Company: {candidate.company || 'Not Found'}</p>
+              <p>Bio: {candidate.bio || 'Not Found'}</p>
+           </div>
+          </div>
         )
       })}
-      <p>{candidatesArray}</p>
+      <button>Next</button>
     </div>
   );
 };
