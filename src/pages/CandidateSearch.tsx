@@ -6,24 +6,12 @@ const CandidateSearch = () => {
   const [candidate, setCandidate] = useState<any>({});
 
   let i = 0;
+  const saved = []
 
-  const save = () => {
-    const savedCandidates = localStorage.getItem('candidates');
-
-    if (savedCandidates) {
-    const savedCandidatesArray = JSON.parse(savedCandidates as string);
-    savedCandidatesArray.push(candidate);
-    localStorage.setItem('candidates', JSON.stringify(savedCandidatesArray));
-    } else {
-      localStorage.setItem('candidates', `[${JSON.stringify(candidate)}]`);
-    }
-  }
-
-  useEffect(() => {
-    searchGithub().then(data => {
-     searchGithubUser(data[i].login)
-     .then(user => {
-      console.log(user);
+  const getCandidates = async (): Promise<any> => {
+    const users = await searchGithub();
+    for (i = 0; i < users.length; i++) {
+      const user = await searchGithubUser(users[i].login);
 
       const profile = {
         avatar: user.avatar_url,
@@ -33,11 +21,44 @@ const CandidateSearch = () => {
         company: user.company,
         bio: user.bio
       }
+
+      saved.push(profile);
+    }
+  }
+
+  const save = () => {
+    const savedCandidates = localStorage.getItem('candidates');
+
+    if (savedCandidates) {
+      const savedCandidatesArray = JSON.parse(savedCandidates as string);
+      savedCandidatesArray.push(candidate);
+      localStorage.setItem('candidates', JSON.stringify(savedCandidatesArray));
+    } else {
+      localStorage.setItem('candidates', `[${JSON.stringify(candidate)}]`);
+    }
+
+    i = (i + 1);
+  }
+
+  // useEffect(() => {
+  //   searchGithub().then(data => {
+  //    searchGithubUser(data[i].login)
+  //    .then(user => {
+  //     console.log(user);
+
+  //     const profile = {
+  //       avatar: user.avatar_url,
+  //       name: `${user.name || ''}(${user.login || ''})`,
+  //       location: user.location,
+  //       email: user.email,
+  //       company: user.company,
+  //       bio: user.bio
+  //     }
       
-      setCandidate(profile);
-     })
-    })
-  }, [i])
+  //     setCandidate(profile);
+  //    })
+  //   })
+  // })
 
   return (
     <div>
