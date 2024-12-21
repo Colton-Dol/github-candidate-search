@@ -3,16 +3,28 @@ import { searchGithub, searchGithubUser } from '../api/API';
 //import Candidate from '../interfaces/Candidate.interface';
 
 const CandidateSearch = () => {
-  const [candidates, setCandidates] = useState<any>([]);
+  const [candidate, setCandidate] = useState<any>({});
 
-  const candidatesArray: any = [];
   let i = 0;
+
+  const save = () => {
+    const savedCandidates = localStorage.getItem('candidates');
+
+    if (savedCandidates) {
+    const savedCandidatesArray = JSON.parse(savedCandidates as string);
+    savedCandidatesArray.push(candidate);
+    localStorage.setItem('candidates', JSON.stringify(savedCandidatesArray));
+    } else {
+      localStorage.setItem('candidates', `[${JSON.stringify(candidate)}]`);
+    }
+  }
 
   useEffect(() => {
     searchGithub().then(data => {
      searchGithubUser(data[i].login)
      .then(user => {
       console.log(user);
+
       const profile = {
         avatar: user.avatar_url,
         name: `${user.name || ''}(${user.login || ''})`,
@@ -21,30 +33,26 @@ const CandidateSearch = () => {
         company: user.company,
         bio: user.bio
       }
-      candidatesArray.push(profile);
-      setCandidates(candidatesArray)
+      
+      setCandidate(profile);
      })
     })
-  }, [])
+  }, [i])
 
   return (
     <div>
       <h1>Candidate Search</h1>
-      {candidates.map((candidate: any) => {
-        return (
-          <div style={{backgroundColor: 'black', borderRadius: 1}}>
-           <img src={candidate.avatar}/>
-           <div style={{marginLeft: 15}}>
-              <h4>{candidate.name}</h4>
-              <p>Location: {candidate.location || 'Not Found'}</p>
-              <p>Email: {candidate.email || 'Not Found'}</p>
-              <p>Company: {candidate.company || 'Not Found'}</p>
-              <p>Bio: {candidate.bio || 'Not Found'}</p>
-           </div>
+        <div style={{backgroundColor: 'black', borderRadius: 1}}>
+          <img src={candidate.avatar}/>
+          <div style={{marginLeft: 15}}>
+            <h4>{candidate.name}</h4>
+            <p>Location: {candidate.location || 'Not Found'}</p>
+            <p>Email: {candidate.email || 'Not Found'}</p>
+            <p>Company: {candidate.company || 'Not Found'}</p>
+            <p>Bio: {candidate.bio || 'Not Found'}</p>
           </div>
-        )
-      })}
-      <button>Next</button>
+        </div>
+      <button onClick={save}>Save</button>
     </div>
   );
 };
