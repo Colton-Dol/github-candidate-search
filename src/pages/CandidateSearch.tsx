@@ -28,6 +28,10 @@ const CandidateSearch = () => {
     setIndex(index + 1);
   }
 
+  const next = () => {
+    setIndex(index + 1);
+  }
+
   useEffect(() => {
     searchGithub().then((data) => {
       setSaved(data)
@@ -65,6 +69,7 @@ const CandidateSearch = () => {
           </div>
         </div>
       <button onClick={save}>Save</button>
+      <button onClick={next}>Next</button>
     </div>
   );
 };
