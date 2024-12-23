@@ -4,7 +4,9 @@ import Candidate from '../interfaces/Candidate.interface';
 
 const CandidateSearch = () => {
   const [candidate, setCandidate] = useState<Candidate>({
+    id: 0,
     avatar_url: '',
+    username: '',
     name: '',
     location: '',
     email: '',
@@ -13,6 +15,21 @@ const CandidateSearch = () => {
   });
   const [saved, setSaved] = useState<any[]>([{}]);
   const [index, setIndex] = useState<number>(0);
+
+  const display = () => {
+    return (
+      <div style={{backgroundColor: 'black', borderRadius: 25}}>
+          <img src={candidate.avatar_url}/>
+          <div style={{marginLeft: 15}}>
+            <h2>{candidate.name}({candidate.username})</h2>
+            <p>Location: {candidate.location}</p>
+            <p>Email: {candidate.email}</p>
+            <p>Company: {candidate.company}</p>
+            <p>Bio: {candidate.bio}</p>
+          </div>
+      </div>
+    )
+  }
 
   const save = () => {
     const savedCandidates = localStorage.getItem('candidates');
@@ -42,12 +59,14 @@ const CandidateSearch = () => {
   useEffect(() => {
     searchGithubUser(saved[index].login).then((user) => {
       setCandidate({
-        avatar_url: `${user.avatar_url}`,
-        name: `${user.name || ''}(${user.login || ''})`,
-        location: user.location,
-        email: user.email,
-        company: user.company,
-        bio: user.bio
+        id: user.id,
+        avatar_url: user.avatar_url,
+        name: user.name || '',
+        username: user.login,
+        location: user.location || 'N/A',
+        email: user.email || 'N/A',
+        company: user.company || 'N/A',
+        bio: user.bio || 'N/A'
       });
     })
   }, [index])
@@ -58,18 +77,9 @@ const CandidateSearch = () => {
   return (
     <div>
       <h1>Candidate Search</h1>
-        <div style={{backgroundColor: 'black', borderRadius: 1}}>
-          <img src={candidate.avatar_url}/>
-          <div style={{marginLeft: 15}}>
-            <h4>{candidate.name}</h4>
-            <p>Location: {candidate.location || 'Not Found'}</p>
-            <p>Email: {candidate.email || 'Not Found'}</p>
-            <p>Company: {candidate.company || 'Not Found'}</p>
-            <p>Bio: {candidate.bio || 'Not Found'}</p>
-          </div>
-        </div>
+      {display()}
       <button onClick={save}>Save</button>
-      <button onClick={next}>Next</button>
+      <button onClick={next} style={{marginLeft: 273}}>Next</button>
     </div>
   );
 };
