@@ -88,10 +88,11 @@ tr {
   border-radius: 10px;
   background-color: #000;
   color: white;
+  text-align: center;
 }
 
 th img {
-  width: 50%;
+  width: 40%;
   margin: 10px;
   border-radius: 20px;
 }
