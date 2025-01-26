@@ -1,5 +1,8 @@
 # GitHub Candidate Search
 
+![Candidate Search Home](/assets/home.png)
+![Candidate Search Saved](/assets/saved.png)
+
 ## Description
 
 This website allows you to look through different profiles on GitHub for potential candidates and save them.
